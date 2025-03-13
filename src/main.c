@@ -106,13 +106,20 @@ int main(void)
         }
 
         Vector2 mousedelta = GetMouseDelta();
-        Matrix Mrot = MatrixRotateXYZ((Vector3) { mousedelta.y * -0.005f, mousedelta.x * -0.005f, 0 });
-        camDirection = Vector3Transform(camDirection, Mrot);  ///rotar la funcion de la camara en cuestion de la matriz
+       // Matrix Mrot = MatrixRotateXYZ((Vector3) { mousedelta.y * -0.005f, mousedelta.x * -0.005f, 0 });
+       //camDirection = Vector3Transform(camDirection, Mrot);  ///rotar la funcion de la camara en cuestion de la matriz
+        float pitch = -mousedelta.y * 0.1 * GetFrameTime();
+        camera.target = Vector3Add(camera.position, camDirection);
+        camDirection = Vector3RotateByAxisAngle(camDirection, camDirectionRight, pitch);
 
+      
+        float yaw = -mousedelta.x * 0.1 * GetFrameTime();
+        //camera.target = Vector3Add(cam.position, camDirection);
+        camDirection = Vector3RotateByAxisAngle(camDirection, camera.up, yaw);
         camera.target = Vector3Add(camera.position, camDirection);
 
         
-        
+      
         // Load new models/textures on drag&drop
         if (IsFileDropped())
         {
@@ -171,10 +178,13 @@ int main(void)
        rlPushMatrix();
        
         modelRotAngle += 45 * GetFrameTime();
-        rlRotatef(modelRotAngle, 1, 0, 0);
+        rlRotatef(modelRotAngle, 0, 1, 0);  //donde este el 1 es el eje por el que rotara   x,z,y
         DrawModel(model, position, 1.0f, WHITE);        // Draw 3d model with texture
         DrawAxes(30.0f);
-        rlPopMatrix();
+       
+        
+        
+       rlPopMatrix();
 
         DrawGrid(20, 10.0f);         // Draw a grid
         DrawAxes(2.0f);
